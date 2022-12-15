@@ -3,6 +3,7 @@
 
 1. Fields for retrofit Method:-> 
 val file = File(getFilePath(context, imageUri).toString())
+
 val reqFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
 val captionBody = caption.toRequestBody("text/plain".toMediaTypeOrNull())
 val profileImageBody = MultipartBody.Part.createFormData("image", file.name, reqFile)
