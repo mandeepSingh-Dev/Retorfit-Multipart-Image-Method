@@ -17,15 +17,10 @@ Retrofit.ApiService.uploadImage( bearerToken(it.token) ,profileImageBody,   capt
 3. ApiService Method :->
 
 @POST("upload/image")
-
 @Multipart
-
-suspend fun uploadImage(
-
+suspend fun uploadImage( 
 @Header("Authorization") token: String,
-
 @Part image: MultipartBody.Part,
-
 @Part("caption") body: RequestBody): Response<UploadImageResponse>
 
 4. Some extra ApiServices methods
