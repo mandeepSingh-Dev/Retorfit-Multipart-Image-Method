@@ -56,6 +56,45 @@ suspend fun uploadImage(
         @Part image: MultipartBody.Part?,
         @PartMap partMap: MutableMap<String, RequestBody>
     ): UpdateProfileResponse
+       
+       ///// Method to get Real path from Uri //////
+         fun Context.getRealPathFromUri(uri: Uri?, ): String?
+    {
+        val contentResolver = this.contentResolver ?: return null
+        val extension = uri?.let { getFileExtension(it, this) }
+
+        // Create file path inside app's data dir
+        val filePath = File("${this.externalCacheDir}${File.separator}${System.currentTimeMillis()}.${extension}").toString()
+
+        val file = File(filePath)
+        try {
+            val inputStream = contentResolver.openInputStream(uri!!) ?: return null
+            val outputStream: OutputStream = FileOutputStream(file)
+            val buf = ByteArray(1024)
+            var len: Int
+            while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
+            outputStream.close()
+            inputStream.close()
+        } catch (e: IOException) {
+            println("exception: ${e.message}")
+            return null
+        }
+        return file.absolutePath
+    }
+       ///////
+       
+       //// Method to get File Extensions/////
+         fun getFileExtension(uri: Uri, context: Context): String? {
+        return if (uri.scheme == ContentResolver.SCHEME_CONTENT) {
+            val mime = MimeTypeMap.getSingleton()
+            mime.getExtensionFromMimeType(context.contentResolver.getType(uri))
+        } else {
+            MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(uri.path?.let { File(it) }).toString())
+        }
+
+    }
+
+       //////////
         
         ******
 
